@@ -78,6 +78,8 @@ DB_HOST=127.0.0.1
 
 The app uses `dotenv` to read these values on startup.
 
+If you want a starting point, copy [.env.example](.env.example) to `.env` and fill in your own password.
+
 ### Database config behavior
 
 - `DB_USER` sets the MySQL user
