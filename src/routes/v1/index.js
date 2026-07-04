@@ -3,10 +3,11 @@ const express = require('express');
 const router = express.Router();
 
 const { InfoController } = require('../../controllers');
+const { UserController } = require('../../controllers');
 
-const  AirplaneRoutes  = require('./airplane-routes');
+const UserRoutes = require('./user-routes');
 
-router.use('/airplanes', AirplaneRoutes);
+router.use('/signup', UserRoutes);
 
 router.get('/info',InfoController.info); 
 
