@@ -2,6 +2,25 @@ const {StatusCodes} = require('http-status-codes');
 const { AppError } = require('../utils');
 const { UserService } = require('../services');
 
+function getAuthToken(req) {
+    const rawToken = req.headers['x-access-token'] || req.headers['authorization'];
+    if (!rawToken) {
+        return null;
+    }
+
+    const jwtPattern = /([A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+)/;
+    const match = rawToken.match(jwtPattern);
+    if (match && match[1]) {
+        return match[1];
+    }
+
+    if (rawToken.startsWith('Bearer ')) {
+        return rawToken.slice(7).trim();
+    }
+
+    return rawToken.trim();
+}
+
 
 function authMiddleware(req, res, next) {
     const authHeader = req.headers['authorization'];
@@ -13,6 +32,8 @@ function authMiddleware(req, res, next) {
             error: {}
         });
     }
+
+    next();
 }
 
 function validateAuthRequest(req, res, next) {
@@ -34,9 +55,36 @@ function validateAuthRequest(req, res, next) {
             error: {}
         }); 
     }
+
+    next();
+}
+
+async function checkAuthentication(req, res, next) {
+    try {
+        const token = getAuthToken(req);
+        const isAuthenticated = await UserService.isAuthenticated(token);
+        if (!isAuthenticated) {
+            return res.status(StatusCodes.UNAUTHORIZED).json({
+                success: false,
+                data: {},
+                message: 'Invalid or expired token',
+                error: {}
+            });
+        }
+        req.user = isAuthenticated; // Attach the authenticated user to the request object
+        next();
+    } catch (error) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({
+            success: false,
+            data: {},
+            message: error.message || 'Invalid or expired token',
+            error: {}
+        });
+    }
 }
 
 module.exports = {
     authMiddleware,
-    validateAuthRequest
+    validateAuthRequest,
+    checkAuthentication
 }

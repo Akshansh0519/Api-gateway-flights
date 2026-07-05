@@ -37,7 +37,27 @@ async function signIn(data) {
     }
 }
 
+async function isAuthenticated(token) {
+    try {
+        if (!token) {
+            throw new AppError('Token is missing', StatusCodes.UNAUTHORIZED);
+        }
+        const decoded = Auth.verifyToken(token);
+        const user = await userRepository.getUserById(decoded.id);
+        if (!user) {
+            throw new AppError('User not found', StatusCodes.NOT_FOUND);
+        }
+        return user;
+    } catch (error) {
+        if (error instanceof AppError) {
+            throw error;
+        }
+        throw new AppError('Invalid or expired JWT token', StatusCodes.UNAUTHORIZED);
+    }
+}
+
 module.exports = {
     createUser,
-    signIn
+    signIn,
+    isAuthenticated
 }

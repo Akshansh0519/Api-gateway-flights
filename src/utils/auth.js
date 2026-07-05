@@ -20,6 +20,19 @@ function createToken(user) {
     }
 }
 
+function verifyToken(token) {
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET_KEY);
+        return decoded;
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            throw new AppError('JWT token has expired', StatusCodes.UNAUTHORIZED);
+        }
+        throw new AppError('Invalid token', StatusCodes.UNAUTHORIZED);
+    }
+} 
+
 module.exports = {
-    createToken
+    createToken,
+    verifyToken
 };
