@@ -14,5 +14,6 @@ module.exports = {
     AppError,
     StatusCodes,
     compareTime,
-    ENUMS
+    ENUMS,
+    
 }
