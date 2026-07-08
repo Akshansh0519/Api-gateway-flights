@@ -69,8 +69,8 @@ src/
 Create a `.env` file in the project root:
 
 ```env
-PORT=3000
-FLIGHT_SERVICE_URL=http://localhost:5000
+PORT=5000
+FLIGHT_SERVICE_URL=http://localhost:3000
 DB_USER=root
 DB_PASSWORD=your_mysql_password
 DB_NAME=flights_development
