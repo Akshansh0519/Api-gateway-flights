@@ -1,8 +1,44 @@
 const { ServerConfig  , Logger} = require('./config');
-
 const express = require('express');
+const ratelimit = require('express-rate-limit');
+
 const app = express();
 const apiRoutes = require('./routes');
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+
+const flightServiceUrl = process.env.FLIGHT_SERVICE_URL || 'http://localhost:3000';
+const bookingServiceUrl = process.env.BOOKING_SERVICE_URL || 'http://localhost:4000';
+
+const limiter = ratelimit({
+    windowMs: 5 * 60 * 1000, // 15 minutes
+    max: 10, // Limit each IP to 15 requests per `window` (here, per 15 minutes)
+    // standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    // legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+app.use(limiter);
+app.use(
+    '/flightService',
+    createProxyMiddleware({
+        target: flightServiceUrl,
+        changeOrigin: true,
+        pathRewrite: {
+            '^/flightService': '', // Remove the /flightService prefix when forwarding the request
+        },
+    })
+);
+
+app.use(
+    '/bookingService',
+    createProxyMiddleware({
+        target: bookingServiceUrl,
+        changeOrigin: true,
+        pathRewrite: {
+            '^/bookingService': '', // Remove the /bookingService prefix when forwarding the request
+        },
+    })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));

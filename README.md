@@ -70,6 +70,7 @@ Create a `.env` file in the project root:
 
 ```env
 PORT=3000
+FLIGHT_SERVICE_URL=http://localhost:5000
 DB_USER=root
 DB_PASSWORD=your_mysql_password
 DB_NAME=flights_development
@@ -86,6 +87,8 @@ If you want a starting point, copy [.env.example](.env.example) to `.env` and fi
 - `DB_PASSWORD` sets the MySQL password
 - `DB_NAME` sets the development database name
 - `DB_HOST` sets the MySQL host
+- `PORT` sets the gateway port
+- `FLIGHT_SERVICE_URL` sets the upstream service that receives `/flightService/*` requests
 
 If `DB_PASSWORD` is missing, Sequelize will try to connect without a password and MySQL will reject it.
 
