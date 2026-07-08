@@ -1,17 +1,32 @@
 const UserRepository = require('../repositories/user-repository');
 const Auth = require('../utils/auth');
+const ENUMS = require('../utils/Enums');
 const bcrypt = require('bcrypt');
 const userRepository = new UserRepository();
+const RoleRepository = require('../repositories/role-repository');
+const roleRepository = new RoleRepository();
 const { StatusCodes, AppError } = require('../utils');
 
 async function createUser(data){
     try{
         const user = await userRepository.create(data);
+        const role = await roleRepository.getRoleByName(ENUMS.USER_ROLE_ENUMS.CUSTOMER);
+        if(!role){
+            throw new AppError('Role not found', StatusCodes.NOT_FOUND);
+        }
+        await user.addRole(role);
         return user;
     }catch(error){
+        if (error instanceof AppError) {
+            throw error;
+        }
         if(error.name == 'SequelizeValidationError'){
             const errorMessages = error.errors.map(err => err.message).join(', ');
             throw new AppError(errorMessages, StatusCodes.BAD_REQUEST);
+        }
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            const errorMessages = error.errors.map(err => err.message).join(', ');
+            throw new AppError(errorMessages || 'User already exists', StatusCodes.BAD_REQUEST);
         }
         throw new AppError('Cannot create a new user', StatusCodes.INTERNAL_SERVER_ERROR);
     }
