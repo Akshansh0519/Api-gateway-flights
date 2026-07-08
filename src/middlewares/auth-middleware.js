@@ -82,9 +82,30 @@ async function checkAuthentication(req, res, next) {
         });
     }
 }
-
+async function isAdmin(req,res,next){
+    try{
+        const user = await UserService.isAdmin(req.user.id);
+        if(!user){
+            return res.status(StatusCodes.FORBIDDEN).json({
+                success: false,
+                data: {},
+                message: 'Access denied. Admins only.',
+                error: {}
+            });
+        }
+        next();
+    } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            data: {},
+            message: error.message || 'Internal server error',
+            error: {}
+        });
+    }
+}
 module.exports = {
     authMiddleware,
     validateAuthRequest,
-    checkAuthentication
+    checkAuthentication,
+    isAdmin
 }

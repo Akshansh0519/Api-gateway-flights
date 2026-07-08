@@ -64,9 +64,34 @@ async function signIn(req, res) {
     }
 }
 
+async function AddRoleToUser(req, res) {
+    try {
+        const user = await UserService.addRoleToUser({
+            userId: req.body.userId,
+            role: req.body.role
+        });
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            data: { user },
+            message: 'Role added to user successfully',
+            error: {}
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            data: {},
+            message: error.message || 'Something went wrong while adding role to user',
+            error: {}
+        });
+    }
+}
+
 
 
 module.exports = {
     createUser,
-    signIn
+    signIn,
+    AddRoleToUser
 }

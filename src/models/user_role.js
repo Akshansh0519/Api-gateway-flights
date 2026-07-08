@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    role_id: {
+    role_id: { // 1->Admin, 2->Customer, 3->Flight_company
       type: DataTypes.INTEGER,
       allowNull: false
     }
