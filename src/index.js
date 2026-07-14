@@ -23,8 +23,8 @@ const apiRoutes = require('./routes');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 
-const flightServiceUrl = process.env.FLIGHT_SERVICE_URL || 'http://localhost:3000';
-const bookingServiceUrl = process.env.BOOKING_SERVICE_URL || 'http://localhost:4000';
+const flightServiceUrl = process.env.FLIGHT_SERVICE_URL || 'https://skyelite-flights-service.onrender.com';
+const bookingServiceUrl = process.env.BOOKING_SERVICE_URL || 'https://skyelite-booking-service.onrender.com';
 
 const limiter = ratelimit({
     windowMs: 5 * 60 * 1000, // 15 minutes
