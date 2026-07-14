@@ -15,6 +15,10 @@ app.use((req, res, next) => {
     }
     next();
 });
+app.get('/ping-cors', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json({ status: 'CORS ACTIVE', commit: '01343c5', time: new Date().toISOString() });
+});
 const apiRoutes = require('./routes');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
