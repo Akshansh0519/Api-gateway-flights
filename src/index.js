@@ -1,8 +1,10 @@
 const { ServerConfig  , Logger} = require('./config');
 const express = require('express');
+const cors = require('cors');
 const ratelimit = require('express-rate-limit');
 
 const app = express();
+app.use(cors());
 const apiRoutes = require('./routes');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
