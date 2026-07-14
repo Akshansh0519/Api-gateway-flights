@@ -5,8 +5,16 @@ const cors = require('cors');
 const ratelimit = require('express-rate-limit');
 
 const app = express();
-app.use(cors({ origin: true, credentials: true }));
-app.options('*', cors({ origin: true, credentials: true }));
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+    next();
+});
 const apiRoutes = require('./routes');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -30,11 +38,17 @@ app.use(
         pathRewrite: {
             '^/flightService': '', // Remove the /flightService prefix when forwarding the request
         },
-        onProxyRes: (proxyRes, req, res) => {
-            res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-            res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token');
-            res.setHeader('Access-Control-Allow-Credentials', 'true');
+        on: {
+            proxyRes: (proxyRes, req, res) => {
+                proxyRes.headers['access-control-allow-origin'] = req.headers.origin || '*';
+                proxyRes.headers['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH';
+                proxyRes.headers['access-control-allow-headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token';
+                proxyRes.headers['access-control-allow-credentials'] = 'true';
+                res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+                res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token');
+                res.setHeader('Access-Control-Allow-Credentials', 'true');
+            },
         },
     })
 );
@@ -47,11 +61,17 @@ app.use(
         pathRewrite: {
             '^/bookingService': '', // Remove the /bookingService prefix when forwarding the request
         },
-        onProxyRes: (proxyRes, req, res) => {
-            res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-            res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token');
-            res.setHeader('Access-Control-Allow-Credentials', 'true');
+        on: {
+            proxyRes: (proxyRes, req, res) => {
+                proxyRes.headers['access-control-allow-origin'] = req.headers.origin || '*';
+                proxyRes.headers['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH';
+                proxyRes.headers['access-control-allow-headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token';
+                proxyRes.headers['access-control-allow-credentials'] = 'true';
+                res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+                res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token');
+                res.setHeader('Access-Control-Allow-Credentials', 'true');
+            },
         },
     })
 );
