@@ -1,3 +1,4 @@
+
 const { ServerConfig  , Logger} = require('./config');
 const express = require('express');
 const cors = require('cors');
@@ -30,10 +31,10 @@ app.use(
             '^/flightService': '', // Remove the /flightService prefix when forwarding the request
         },
         onProxyRes: (proxyRes, req, res) => {
-            proxyRes.headers['access-control-allow-origin'] = req.headers.origin || '*';
-            proxyRes.headers['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH';
-            proxyRes.headers['access-control-allow-headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token';
-            proxyRes.headers['access-control-allow-credentials'] = 'true';
+            res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+            res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token');
+            res.setHeader('Access-Control-Allow-Credentials', 'true');
         },
     })
 );
@@ -47,10 +48,10 @@ app.use(
             '^/bookingService': '', // Remove the /bookingService prefix when forwarding the request
         },
         onProxyRes: (proxyRes, req, res) => {
-            proxyRes.headers['access-control-allow-origin'] = req.headers.origin || '*';
-            proxyRes.headers['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH';
-            proxyRes.headers['access-control-allow-headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token';
-            proxyRes.headers['access-control-allow-credentials'] = 'true';
+            res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+            res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token');
+            res.setHeader('Access-Control-Allow-Credentials', 'true');
         },
     })
 );
