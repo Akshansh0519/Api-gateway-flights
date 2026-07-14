@@ -4,7 +4,8 @@ const cors = require('cors');
 const ratelimit = require('express-rate-limit');
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
+app.options('*', cors({ origin: true, credentials: true }));
 const apiRoutes = require('./routes');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -28,6 +29,12 @@ app.use(
         pathRewrite: {
             '^/flightService': '', // Remove the /flightService prefix when forwarding the request
         },
+        onProxyRes: (proxyRes, req, res) => {
+            proxyRes.headers['access-control-allow-origin'] = req.headers.origin || '*';
+            proxyRes.headers['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH';
+            proxyRes.headers['access-control-allow-headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token';
+            proxyRes.headers['access-control-allow-credentials'] = 'true';
+        },
     })
 );
 
@@ -38,6 +45,12 @@ app.use(
         changeOrigin: true,
         pathRewrite: {
             '^/bookingService': '', // Remove the /bookingService prefix when forwarding the request
+        },
+        onProxyRes: (proxyRes, req, res) => {
+            proxyRes.headers['access-control-allow-origin'] = req.headers.origin || '*';
+            proxyRes.headers['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH';
+            proxyRes.headers['access-control-allow-headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token';
+            proxyRes.headers['access-control-allow-credentials'] = 'true';
         },
     })
 );
